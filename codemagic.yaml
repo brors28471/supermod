@@ -19,7 +19,7 @@ workflows:
           cp app.json Payload/AgarIOMenu.app/ || true
           cp package.json Payload/AgarIOMenu.app/ || true
           
-          # Create Info.plist
+          # Create Info.plist with SharkMod bundle ID
           cat > Payload/AgarIOMenu.app/Info.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -28,8 +28,10 @@ workflows:
               <key>CFBundleExecutable</key>
               <string>AgarIOMenu</string>
               <key>CFBundleIdentifier</key>
-              <string>com.dtje029.agaromenu</string>
+              <string>com.miniclip.agar.io.shark</string>
               <key>CFBundleName</key>
+              <string>AgarIOMenu</string>
+              <key>CFBundleDisplayName</key>
               <string>AgarIOMenu</string>
               <key>CFBundlePackageType</key>
               <string>APPL</string>
