@@ -8,13 +8,9 @@ workflows:
         XCODE_SCHEME: "AgarIOMenu"
         BUNDLE_ID: "com.dtje029.agaromenu"
     scripts:
-      - name: Install dependencies
+      - name: Build iOS App
         script: |
-          cd $CM_BUILD_DIR
-          ls -la
-      - name: Build for iOS
-        script: |
-          xcodebuild build \
+          xcodebuild \
             -project "$XCODE_PROJECT" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
@@ -23,8 +19,14 @@ workflows:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+      - name: Create IPA
+        script: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/AgarIOMenu.app Payload/
+          zip -r AgarIOMenu.ipa Payload
+          rm -rf Payload
     artifacts:
-      - build/Build/Products/Release-iphoneos/**/*.app
+      - AgarIOMenu.ipa
     publishing:
       email:
         recipients:
