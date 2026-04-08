@@ -1,24 +1,30 @@
 workflows:
   ios-workflow:
-    name: iOS Workflow
+    name: iOS Build
     instance_type: mac_mini_m1
     environment:
       vars:
-        XCODE_WORKSPACE: "AgarIOMenu.xcodeproj"
+        XCODE_PROJECT: "AgarIOMenu.xcodeproj"
         XCODE_SCHEME: "AgarIOMenu"
+        BUNDLE_ID: "com.dtje029.agaromenu"
     scripts:
-      - name: Build
+      - name: Install dependencies
+        script: |
+          cd $CM_BUILD_DIR
+          ls -la
+      - name: Build for iOS
         script: |
           xcodebuild build \
-            -project "$XCODE_WORKSPACE" \
+            -project "$XCODE_PROJECT" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
-            -derivedDataPath build/DerivedData \
-            -destination generic/platform=iOS \
+            -sdk iphoneos \
+            -derivedDataPath build \
             CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
     artifacts:
-      - build/DerivedData/Build/Products/Release-iphoneos/**/*.app
+      - build/Build/Products/Release-iphoneos/**/*.app
     publishing:
       email:
         recipients:
