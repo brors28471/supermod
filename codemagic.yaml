@@ -7,25 +7,18 @@ workflows:
         XCODE_WORKSPACE: "AgarIOMenu.xcodeproj"
         XCODE_SCHEME: "AgarIOMenu"
     scripts:
-      - name: Build Archive
+      - name: Build
         script: |
-          xcodebuild archive \
+          xcodebuild build \
             -project "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
-            -archivePath build/AgarIOMenu.xcarchive \
             -derivedDataPath build/DerivedData \
+            -destination generic/platform=iOS \
             CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
-      - name: Export IPA
-        script: |
-          xcodebuild -exportArchive \
-            -archivePath build/AgarIOMenu.xcarchive \
-            -exportPath build/ipa \
-            -exportOptionsPlist ExportOptions.plist
+            CODE_SIGNING_REQUIRED=NO
     artifacts:
-      - build/ipa/**/*.ipa
+      - build/DerivedData/Build/Products/Release-iphoneos/**/*.app
     publishing:
       email:
         recipients:
