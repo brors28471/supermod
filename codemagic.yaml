@@ -1,43 +1,25 @@
 workflows:
-  ios-workflow:
-    name: iOS Build
+  react-native-ios:
+    name: React Native iOS
     instance_type: mac_mini_m1
+    environment:
+      node: 18
     scripts:
-      - name: Create Xcode Project
+      - name: Install dependencies
         script: |
-          # Create a simple iOS app structure
-          mkdir -p build/Payload/AgarIOMenu.app
-          
-          # Create Info.plist
-          cat > build/Payload/AgarIOMenu.app/Info.plist << 'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>CFBundleExecutable</key>
-              <string>AgarIOMenu</string>
-              <key>CFBundleIdentifier</key>
-              <string>com.dtje029.agaromenu</string>
-              <key>CFBundleName</key>
-              <string>AgarIOMenu</string>
-              <key>CFBundlePackageType</key>
-              <string>APPL</string>
-              <key>CFBundleShortVersionString</key>
-              <string>1.0</string>
-              <key>CFBundleVersion</key>
-              <string>1</string>
-              <key>MinimumOSVersion</key>
-              <string>14.0</string>
-          </dict>
-          </plist>
-          EOF
-          
-          # Create IPA
-          cd build
-          zip -r ../AgarIOMenu.ipa Payload
-          cd ..
-          ls -la AgarIOMenu.ipa
-      
+          npm install -g expo-cli eas-cli
+          npm install
+      - name: Build iOS app
+        script: |
+          npx expo export:embed
+          npx expo prebuild --platform ios
+          xcodebuild -workspace ios/agariomenu.xcworkspace -scheme agariomenu -configuration Release -sdk iphoneos -derivedDataPath ios/build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO || xcodebuild -project ios/agariomenu.xcodeproj -scheme agariomenu -configuration Release -sdk iphoneos -derivedDataPath ios/build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      - name: Create IPA
+        script: |
+          mkdir -p Payload
+          cp -r ios/build/Build/Products/Release-iphoneos/*.app Payload/ || cp -r ios/build/Build/Products/Release-iphoneos/agariomenu.app Payload/
+          zip -r AgarIOMenu.ipa Payload
+          rm -rf Payload
     artifacts:
       - AgarIOMenu.ipa
     publishing:
