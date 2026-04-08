@@ -14,5 +14,9 @@
 	<string></string>
 	<key>thinning</key>
 	<string>&lt;none&gt;</string>
+	<key>provisioningProfiles</key>
+	<dict/>
+	<key>signingCertificate</key>
+	<string></string>
 </dict>
 </plist>

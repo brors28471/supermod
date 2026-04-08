@@ -3,25 +3,25 @@ workflows:
     name: iOS Workflow
     instance_type: mac_mini_m1
     environment:
-      ios_signing:
-        distribution_type: ad_hoc
-        bundle_identifier: com.dtje029.agaromenu
       vars:
         XCODE_WORKSPACE: "AgarIOMenu.xcodeproj"
         XCODE_SCHEME: "AgarIOMenu"
     scripts:
-      - name: Build
+      - name: Build Archive
         script: |
-          xcodebuild build-for-testing \
+          xcodebuild archive \
             -project "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
+            -archivePath build/AgarIOMenu.xcarchive \
             -derivedDataPath build/DerivedData \
-            -destination 'generic/platform=iOS'
-      - name: Package IPA
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Export IPA
         script: |
           xcodebuild -exportArchive \
-            -archivePath build/DerivedData/Build/Products/Release-iphoneos/$XCODE_SCHEME.xcarchive \
+            -archivePath build/AgarIOMenu.xcarchive \
             -exportPath build/ipa \
             -exportOptionsPlist ExportOptions.plist
     artifacts:
